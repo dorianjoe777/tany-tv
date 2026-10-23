@@ -20,3 +20,7 @@ assets/plates/orig/
 # Capturas y salidas
 shots/
 tools/*.log
+
+# Carpetas de publicacion (se regeneran con tools/make-deploy.ps1 y make-source.ps1)
+deploy/
+source-lite/
