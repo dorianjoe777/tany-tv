@@ -1,0 +1,64 @@
+{
+    "requests":  [
+                     {
+                         "prompt":  "Mid-century linocut movie poster art, deep ink and warm amber duotone, engraved line work, heavy film grain, dramatic light, minimal composition, no text, no letters, no numbers, no people, no characters: a single empty velvet theatre seat lit by one lamp",
+                         "aspect_ratio":  "3:4",
+                         "resolution":  "1K",
+                         "output_file":  "p-mv11.png"
+                     },
+                     {
+                         "prompt":  "Mid-century linocut movie poster art, deep ink and warm amber duotone, engraved line work, heavy film grain, dramatic light, minimal composition, no text, no letters, no numbers, no people, no characters: a worn baseball glove and a baseball resting in long grass",
+                         "aspect_ratio":  "3:4",
+                         "resolution":  "1K",
+                         "output_file":  "p-sr1.png"
+                     },
+                     {
+                         "prompt":  "Mid-century linocut movie poster art, deep ink and warm amber duotone, engraved line work, heavy film grain, dramatic light, minimal composition, no text, no letters, no numbers, no people, no characters: a dirt road crossing wide prairie fields toward a distant red barn",
+                         "aspect_ratio":  "3:4",
+                         "resolution":  "1K",
+                         "output_file":  "p-sr2.png"
+                     },
+                     {
+                         "prompt":  "Mid-century linocut movie poster art, deep ink and warm amber duotone, engraved line work, heavy film grain, dramatic light, minimal composition, no text, no letters, no numbers, no people, no characters: snow falling on an old lamppost and a wooden fence",
+                         "aspect_ratio":  "3:4",
+                         "resolution":  "1K",
+                         "output_file":  "p-sr3.png"
+                     },
+                     {
+                         "prompt":  "Mid-century linocut movie poster art, deep ink and warm amber duotone, engraved line work, heavy film grain, dramatic light, minimal composition, no text, no letters, no numbers, no people, no characters: a bright spotlight on an empty dark stage with a red curtain",
+                         "aspect_ratio":  "3:4",
+                         "resolution":  "1K",
+                         "output_file":  "p-sr4.png"
+                     },
+                     {
+                         "prompt":  "Mid-century linocut movie poster art, deep ink and warm amber duotone, engraved line work, heavy film grain, dramatic light, minimal composition, no text, no letters, no numbers, no people, no characters: a small rocket ship drifting among planets in deep space",
+                         "aspect_ratio":  "3:4",
+                         "resolution":  "1K",
+                         "output_file":  "p-sr5.png"
+                     },
+                     {
+                         "prompt":  "Mid-century linocut movie poster art, deep ink and warm amber duotone, engraved line work, heavy film grain, dramatic light, minimal composition, no text, no letters, no numbers, no people, no characters: a tiny rocket ascending toward an enormous pale moon",
+                         "aspect_ratio":  "3:4",
+                         "resolution":  "1K",
+                         "output_file":  "p-sr6.png"
+                     },
+                     {
+                         "prompt":  "Mid-century linocut movie poster art, deep ink and warm amber duotone, engraved line work, heavy film grain, dramatic light, minimal composition, no text, no letters, no numbers, no people, no characters: a simple little house on a green hill behind a picket fence",
+                         "aspect_ratio":  "3:4",
+                         "resolution":  "1K",
+                         "output_file":  "p-sr7.png"
+                     },
+                     {
+                         "prompt":  "Mid-century linocut movie poster art, deep ink and warm amber duotone, engraved line work, heavy film grain, dramatic light, minimal composition, no text, no letters, no numbers, no people, no characters: a row of tiny round birds perched on a fence rail at dawn",
+                         "aspect_ratio":  "3:4",
+                         "resolution":  "1K",
+                         "output_file":  "p-sr8.png"
+                     },
+                     {
+                         "prompt":  "Mid-century linocut movie poster art, deep ink and warm amber duotone, engraved line work, heavy film grain, dramatic light, minimal composition, no text, no letters, no numbers, no people, no characters: a flying kite high above a field with a long ribbon tail",
+                         "aspect_ratio":  "3:4",
+                         "resolution":  "1K",
+                         "output_file":  "p-kite.png"
+                     }
+                 ]
+}

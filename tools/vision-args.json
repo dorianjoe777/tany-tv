@@ -1,0 +1,14 @@
+{
+  "image_info": [
+    {
+      "url": "https://matrix-internal.oss-us-east-1.aliyuncs.com/user_file_upload_tmp%2F2026-10-23%2F300b0fa3-13ea-4bcd-9511-b8bdb773b3a0.HEIC?x-oss-credential=LTAI5t9dXq2sLrMZ8f1XfiFZ%2F20261023%2Fus-east-1%2Foss%2Faliyun_v4_request&x-oss-date=20261023T222323Z&x-oss-expires=3600&x-oss-signature=e9393bca19e29416bf655a3f8018ca66f8904650453bab25a2ee6ed9f71d86d5&x-oss-signature-version=OSS4-HMAC-SHA256",
+      "mime_type": "image/heic",
+      "prompt": "This is a photo of a Samsung TV screen showing settings. Transcribe VERBATIM every piece of text visible, especially: IP addresses, port numbers, device IDs, MAC addresses, hostnames, remote-access URLs, and menu/button labels. Do not summarize - list the exact strings you can read. Also state which TV setting screen this is."
+    },
+    {
+      "url": "https://matrix-internal.oss-us-east-1.aliyuncs.com/user_file_upload_tmp%2F2026-10-23%2F1b5c394c-ac2c-4463-aa2c-965200607195.HEIC?x-oss-credential=LTAI5t9dXq2sLrMZ8f1XfiFZ%2F20261023%2Fus-east-1%2Foss%2Faliyun_v4_request&x-oss-date=20261023T222328Z&x-oss-expires=3600&x-oss-signature=5fb627a26c111286a2fed870af6cd1bafc2a69479d26758f52ac7c29f0f3b91b&x-oss-signature-version=OSS4-HMAC-SHA256",
+      "mime_type": "image/heic",
+      "prompt": "This is a photo of a screen showing connection/network settings. Transcribe VERBATIM every piece of text visible, especially: IP addresses, port numbers, device IDs, MAC addresses, hostnames, remote-access URLs, and menu/button labels. Do not summarize - list the exact strings you can read. Also state which app or screen this is."
+    }
+  ]
+}

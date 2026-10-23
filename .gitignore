@@ -1,0 +1,22 @@
+# Toolchain local (no se versiona)
+tools/jdk/
+tools/android-sdk/
+tools/platform-tools/
+tools/git/
+tools/*.zip
+tools/PortableGit.exe
+tools/*.exe
+tools/snoopy.keystore
+
+# Builds
+android/build/
+android/SnoopyTV.apk
+android/SnoopyTV.apk.idsig
+
+# Arte original de alta resolucion (los .jpg normalizados si se versionan)
+assets/posters/*.png
+assets/plates/orig/
+
+# Capturas y salidas
+shots/
+tools/*.log

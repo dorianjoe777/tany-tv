@@ -1,0 +1,22 @@
+{
+  "requests": [
+    {
+      "prompt": "Mid-century linocut engraving of rolling hills at night seen from far away, fine parallel line work, deep ink black sky with sparse small stars, warm amber and dark umber palette, vast empty sky, atmospheric depth, subtle film grain, no characters, no people, no text, no logo",
+      "aspect_ratio": "16:9",
+      "resolution": "2K",
+      "output_file": "depth-far.png"
+    },
+    {
+      "prompt": "Vintage engraved illustration of a single bare crooked tree standing alone on a dark hill under an oversized pale moon, minimal composition, thin warm cream ink lines on deep ink background, mid-century printmaking, soft grain, no characters, no people, no text",
+      "aspect_ratio": "16:9",
+      "resolution": "2K",
+      "output_file": "depth-near.png"
+    },
+    {
+      "prompt": "Minimal mid-century engraving of a long wooden picket fence running across a dark empty field at night, thin pale lines, strong atmospheric perspective fading into fog, deep ink and warm brown palette, no characters, no people, no text",
+      "aspect_ratio": "16:9",
+      "resolution": "2K",
+      "output_file": "depth-mid.png"
+    }
+  ]
+}

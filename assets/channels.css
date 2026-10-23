@@ -1,0 +1,104 @@
+/* ============================================================
+   SNOOPY TV · animaciones de canales y reproductor
+   ============================================================ */
+
+/* ---------- Reproductor: Ken Burns sobre el póster ---------- */
+.scene-anim{position:absolute;inset:0;animation:kenburns 24s ease-in-out infinite alternate}
+@keyframes kenburns{
+  from{transform:scale(1.02) translate(0,0)}
+  to{transform:scale(1.14) translate(-1.5%,-1.5%)}
+}
+.tv-screen .scene-anim svg{width:100%;height:100%}
+
+/* ---------- Canal 1 · The Flying Ace ---------- */
+.ace-plane{animation:flyby 11s linear infinite}
+@keyframes flyby{
+  0%{transform:translate(-40%,320px) scale(.8)}
+  50%{transform:translate(60%,120px) scale(1.1)}
+  100%{transform:translate(140%,-140px) scale(.9)}
+}
+.ace-zoom{opacity:0;animation:acezoom 11s linear infinite}
+@keyframes acezoom{
+  0%,6%{opacity:0;transform:scale(.3)}
+  12%{opacity:.9}
+  22%{opacity:0;transform:scale(2.6)}
+  100%{opacity:0;transform:scale(2.6)}
+}
+.searchlight{transform-origin:top center}
+.searchlight-1{animation:sweep 7s ease-in-out infinite alternate}
+.searchlight-2{animation:sweep 9s ease-in-out infinite alternate-reverse}
+@keyframes sweep{from{transform:rotate(-14deg)}to{transform:rotate(14deg)}}
+.sun-disc{animation:sunpulse 6s ease-in-out infinite alternate}
+@keyframes sunpulse{from{opacity:.7}to{opacity:1}}
+.clouds-ch{animation:driftx 40s linear infinite}
+@keyframes driftx{from{transform:translateX(-120px)}to{transform:translateX(120px)}}
+
+/* ---------- Canal 2 · Sopwith Camel ---------- */
+.camel-walk{animation:camelbob 1.1s ease-in-out infinite alternate}
+@keyframes camelbob{from{transform:translate(760px,520px)}to{transform:translate(772px,512px)}}
+.bomb{animation:bombdrop 5.5s linear infinite}
+.bomb-2{animation-duration:6.8s;animation-delay:-2s}
+.bomb-3{animation-duration:8s;animation-delay:-4s}
+@keyframes bombdrop{
+  0%{transform:translate(1200px,-60px) rotate(0)}
+  70%{transform:translate(700px,700px) rotate(420deg)}
+  100%{transform:translate(700px,720px) rotate(540deg);opacity:0}
+}
+
+/* ---------- Canal 3 · Joe Cool ---------- */
+.cool-glasses{animation:coolsway 5s ease-in-out infinite alternate}
+@keyframes coolsway{from{transform:translate(800px,420px) rotate(-2deg)}to{transform:translate(800px,420px) rotate(2deg)}}
+.cool-glasses::after{content:""}
+.cool-words text{animation:shimmer 3.4s linear infinite}
+@keyframes shimmer{
+  0%,100%{fill:#f8f2e1}
+  50%{fill:#f3c34d}
+}
+.spot{transform-origin:top center}
+.spot-1{animation:spotmove 6s ease-in-out infinite alternate}
+.spot-2{animation:spotmove 8s ease-in-out infinite alternate-reverse}
+@keyframes spotmove{from{transform:rotate(-9deg)}to{transform:rotate(9deg)}}
+
+/* ---------- Canal 4 · Lucy's Telepathy TV ---------- */
+.thought{transform-origin:center;animation:thoughtpop 6s ease-in-out infinite}
+.thought-1{animation-delay:0s}
+.thought-2{animation-delay:3s}
+@keyframes thoughtpop{
+  0%,42%{opacity:0;transform:scale(.6) translateY(14px)}
+  50%,88%{opacity:1;transform:scale(1) translateY(0)}
+  100%{opacity:0;transform:scale(1.04) translateY(-6px)}
+}
+.lucy{animation:lucyhead 4.2s ease-in-out infinite}
+@keyframes lucyhead{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+
+/* ---------- Canal 5 · Kite Weather ---------- */
+.big-kite{animation:kitesway 5.5s ease-in-out infinite alternate}
+@keyframes kitesway{from{transform:translate(1050px,180px) rotate(-7deg)}to{transform:translate(1050px,150px) rotate(6deg)}}
+.wx-clouds{animation:driftx 34s linear infinite alternate}
+.little-tree{animation:treesway 4s ease-in-out infinite alternate}
+@keyframes treesway{from{transform:translate(340px,690px) rotate(-3deg)}to{transform:translate(340px,690px) rotate(3deg)}}
+.forecast-card{animation:cardfloat 7s ease-in-out infinite alternate}
+@keyframes cardfloat{from{transform:translateY(0)}to{transform:translateY(-12px)}}
+
+/* ---------- Canal 6 · Baseball ---------- */
+.fly-ball{animation:ballarc 4.5s cubic-bezier(.4,0,.6,1) infinite}
+@keyframes ballarc{
+  0%{transform:translate(640px,640px)}
+  50%{transform:translate(880px,260px)}
+  100%{transform:translate(1120px,640px)}
+}
+.fielder{animation:fieldready 2.4s ease-in-out infinite alternate}
+.f2{animation-delay:.6s}
+@keyframes fieldready{from{transform:translateY(0)}to{transform:translateY(-10px)}}
+.scoreboard{animation:boardflick 5s steps(1) infinite}
+@keyframes boardflick{0%,92%{opacity:1}93%{opacity:.3}94%{opacity:1}96%{opacity:.5}97%{opacity:1}}
+
+/* ---------- Overlay de canal ---------- */
+.channel-stage .chan-scene{position:absolute;inset:0}
+.channel-stage svg{width:100%;height:100%}
+
+body.reduced-motion .ace-plane,
+body.reduced-motion .bomb,
+body.reduced-motion .cool-words text,
+body.reduced-motion .thought,
+body.reduced-motion .fly-ball{animation:none!important}

@@ -1,0 +1,51 @@
+/* ============================================================
+   TANY TV · motor de profundidad
+   Capas en Z con paralaje de puntero y de foco, inclinacion 3D
+   del elemento enfocado y brillo especular.
+
+   Las variables las escribe assets/depth.js:
+     --dpx --dpy      paralaje efectivo suavizado  [-1..1]
+     --dfx --dfy      paralaje de foco             [-1..1]
+     --tiltx --tilty  inclinacion del elemento enfocado (deg)
+     --sheen-x --sheen-y  posicion del brillo especular (%)
+   ============================================================ */
+
+/* --- 1 · ESCENA CON PERSPECTIVA --- */
+#scene{perspective:1200px;perspective-origin:50% 55%}
+
+/* --- 2 · CAPAS DE PROFUNDIDAD --- */
+.depth-layer{
+  position:absolute;inset:0;pointer-events:none;
+  will-change:transform;transform-origin:50% 100%;
+  transition:transform .45s cubic-bezier(.22,.9,.3,1);
+}
+.depth-far {transform:translate3d(calc(var(--dpx,0) * -8px),calc(var(--dpy,0) * -5px),-140px);filter:blur(1.5px)}
+.depth-mid {transform:translate3d(calc(var(--dpx,0) * -16px),calc(var(--dpy,0) * -9px),-70px)}
+.depth-near{transform:translate3d(calc(var(--dpx,0) * -26px),calc(var(--dpy,0) * -14px),0px)}
+.depth-fg  {transform:translate3d(calc(var(--dpx,0) * -44px),calc(var(--dpy,0) * -22px),90px);filter:blur(7px)}
+
+/* --- 3 · BRILLO ESPECULAR --- */
+.sheen{
+  position:absolute;inset:0;z-index:6;pointer-events:none;
+  background:radial-gradient(420px circle at var(--sheen-x,50%) var(--sheen-y,50%),rgba(255,255,255,.10),rgba(255,255,255,0) 60%);
+  mix-blend-mode:screen;opacity:0;
+  transition:opacity .45s cubic-bezier(.22,.9,.3,1);
+}
+.sheen.on{opacity:.9}
+
+/* --- 4 · INCLINACION 3D DEL ELEMENTO ENFOCADO --- */
+/* Selector de doble clase a proposito: gana a .card.is-focused{transform:...}
+   de os.css sin depender del orden de carga de las hojas de estilo. */
+body .depth-tilt.depth-tilt{
+  transform:perspective(900px) translateZ(26px) rotateX(var(--tiltx,0deg)) rotateY(var(--tilty,0deg));
+  transform-style:preserve-3d;
+  transition:transform .3s cubic-bezier(.22,.9,.3,1);
+}
+
+/* --- 5 · MARCA DE MOTOR ACTIVO --- */
+/* body.depth-ready lo pone assets/depth.js al inicializar el motor.
+   Sirve de interruptor para integraciones que quieran consultar el estado. */
+body.depth-ready{--depth-active:1}
+
+/* --- 6 · DEGRADACION SUTIL --- */
+body.reduced-motion .depth-layer{transition:none}
