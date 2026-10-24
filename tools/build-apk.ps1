@@ -106,6 +106,7 @@ Copy-Item (Join-Path $root 'assets\*.js') (Join-Path $site 'assets') -Force
 Copy-Item (Join-Path $root 'assets\fonts\*.woff2') (Join-Path $site 'assets\fonts') -Force
 Copy-Item (Join-Path $root 'assets\fonts\fonts.css') (Join-Path $site 'assets\fonts') -Force
 Copy-Item (Join-Path $root 'assets\plates\*.jpg') (Join-Path $site 'assets\plates') -Force
+Copy-Item (Join-Path $root 'assets\chars\*.cut.png') (Join-Path $site 'assets\chars') -Force
 Write-Output '2/7 sitio web empaquetado en assets/site'
 
 # ---------- 3. recursos ----------

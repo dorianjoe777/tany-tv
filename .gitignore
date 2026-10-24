@@ -17,6 +17,10 @@ android/SnoopyTV.apk.idsig
 assets/posters/*.png
 assets/plates/orig/
 
+# Laminas de personajes en alta: solo se versiona el recorte con alfa
+assets/chars/*.png
+!assets/chars/*.cut.png
+
 # Capturas y salidas
 shots/
 tools/*.log

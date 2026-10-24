@@ -277,6 +277,56 @@ const SHOP = [
     icon:'ball' },
 ];
 
+/* ---------- CIUDADES Y CLIMA ---------- */
+const CITIES = [
+  { name: 'Quito', lat: -0.1807, lon: -78.4678 },
+  { name: 'Guayaquil', lat: -2.1894, lon: -79.8891 },
+  { name: 'Cuenca', lat: -2.9001, lon: -79.0059 },
+  { name: 'Valencia', lat: 10.1620, lon: -68.0077 },
+  { name: 'Manta', lat: -0.9677, lon: -80.7089 },
+  { name: 'Madrid', lat: 40.4168, lon: -3.7038 },
+  { name: 'Lisboa', lat: 38.7223, lon: -9.1393 },
+  { name: 'Nueva York', lat: 40.7128, lon: -74.0060 },
+  { name: 'Bogotá', lat: 4.7110, lon: -74.0721 },
+];
+
+/* Codigos meteorologicos de la OMM traducidos al mundo de Peanuts. */
+const WMO = {
+  0: ['Cielo despejado sobre la colina', 'sol'],
+  1: ['Casi despejado, con una nube suelta', 'sol'],
+  2: ['Nubes dispersas, buen dia para el cometa', 'nube'],
+  3: ['Nublado: solo se ve la punta del arbol', 'nube'],
+  45: ['Niebla en la colina, no se ve la casa del perro', 'niebla'],
+  48: ['Niebla con escarcha en la valla', 'niebla'],
+  51: ['Llovizna, la manta de Linus se moja', 'lluvia'],
+  53: ['Llovizna constante', 'lluvia'],
+  55: ['Llovizna intensa', 'lluvia'],
+  56: ['Llovizna helada', 'lluvia'],
+  57: ['Llovizna helada fuerte', 'lluvia'],
+  61: ['Lluvia suave, el Woodstock se moja', 'lluvia'],
+  63: ['Lluvia', 'lluvia'],
+  65: ['Lluvia fuerte, todos a casa', 'lluvia'],
+  66: ['Lluvia helada', 'lluvia'],
+  67: ['Lluvia helada fuerte', 'lluvia'],
+  71: ['Nieve: estado de animo excellentisimo', 'nieve'],
+  73: ['Nieve abundante', 'nieve'],
+  75: ['Nevada: la colina es blanca', 'nieve'],
+  77: ['Granos de nieve', 'nieve'],
+  80: ['Chubascos dispersos', 'lluvia'],
+  81: ['Chubascos', 'lluvia'],
+  82: ['Chubascos violentos, corre Snoopy', 'lluvia'],
+  85: ['Chubascos de nieve', 'nieve'],
+  86: ['Chubascos de nieve fuertes', 'nieve'],
+  95: ['Tormenta sobre el arbol', 'tormenta'],
+  96: ['Tormenta con granizo', 'tormenta'],
+  99: ['Tormenta fuerte, la casa tiembla', 'tormenta'],
+};
+
+function weatherOf(code) {
+  const w = WMO[code] || ['Cielo raro, del tipo que no se explica', 'nube'];
+  return { label: w[0], icon: w[1] };
+}
+
 /* ---------- AYUDAS DE ARTE ---------- */
 function fitLines(title, maxW, baseSize) {
   const words = String(title).split(' ');

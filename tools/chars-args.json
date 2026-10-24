@@ -1,0 +1,24 @@
+{
+  "requests": [
+    { "prompt": "Vintage 1960s linocut illustration of Snoopy the beagle sleeping curled up on top of his small wooden doghouse, cream white lines and warm amber on deep black, isolated single subject, full body, centered, on a perfectly flat solid pure black background, no ground, no shadow, no texture, no vignette, no text",
+      "aspect_ratio": "3:4", "resolution": "1K", "output_file": "c-snoopy.png" },
+    { "prompt": "Vintage 1960s linocut illustration of Charlie Brown, a round-headed boy in a yellow zigzag shirt, standing and looking up holding a small red football, cream white lines and warm amber on deep black, isolated single subject, full body, centered, on a perfectly flat solid pure black background, no ground, no shadow, no texture, no text",
+      "aspect_ratio": "3:4", "resolution": "1K", "output_file": "c-charlie.png" },
+    { "prompt": "Vintage 1960s linocut illustration of Woodstock, a tiny round yellow bird, flying with wings spread, cream white lines and warm amber on deep black, isolated single subject, centered, on a perfectly flat solid pure black background, no ground, no shadow, no texture, no text",
+      "aspect_ratio": "1:1", "resolution": "1K", "output_file": "c-woodstock.png" },
+    { "prompt": "Vintage 1960s linocut illustration of a single big round red helium balloon with a curly string, cream white lines and warm amber on deep black, isolated single subject, centered, on a perfectly flat solid pure black background, no ground, no shadow, no texture, no text",
+      "aspect_ratio": "1:1", "resolution": "1K", "output_file": "c-globo.png" },
+    { "prompt": "Vintage 1960s linocut illustration of Linus, a small boy with a single curl of hair, hugging his blue and red striped security blanket, cream white lines and warm amber on deep black, isolated single subject, full body, centered, on a perfectly flat solid pure black background, no ground, no shadow, no texture, no text",
+      "aspect_ratio": "3:4", "resolution": "1K", "output_file": "c-linus.png" },
+    { "prompt": "Vintage 1960s linocut illustration of Lucy, a girl with short black hair and a blue dress, standing with arms crossed, cream white lines and warm amber on deep black, isolated single subject, full body, centered, on a perfectly flat solid pure black background, no ground, no shadow, no texture, no text",
+      "aspect_ratio": "3:4", "resolution": "1K", "output_file": "c-lucy.png" },
+    { "prompt": "Vintage 1960s linocut illustration of a small wooden doghouse with a red shingled roof seen from the side, cream white lines and warm amber on deep black, isolated single subject, centered, on a perfectly flat solid pure black background, no ground, no shadow, no texture, no text",
+      "aspect_ratio": "1:1", "resolution": "1K", "output_file": "c-casaperro.png" },
+    { "prompt": "Vintage 1960s linocut illustration of a diamond shaped kite with a long ribbon tail, cream white lines and warm amber on deep black, isolated single subject, centered, on a perfectly flat solid pure black background, no ground, no shadow, no texture, no text",
+      "aspect_ratio": "1:1", "resolution": "1K", "output_file": "c-cometa.png" },
+    { "prompt": "Vintage 1960s linocut illustration of a single American football, brown leather with white laces, cream white lines and warm amber on deep black, isolated single subject, centered, on a perfectly flat solid pure black background, no ground, no shadow, no texture, no text",
+      "aspect_ratio": "1:1", "resolution": "1K", "output_file": "c-futbol.png" },
+    { "prompt": "Vintage 1960s linocut illustration of Schroeder's small black grand piano seen from the side, cream white lines and warm amber on deep black, isolated single subject, centered, on a perfectly flat solid pure black background, no ground, no shadow, no texture, no text",
+      "aspect_ratio": "1:1", "resolution": "1K", "output_file": "c-piano.png" }
+  ]
+}

@@ -12,11 +12,13 @@
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='52' r='34' fill='%23efc24a'/><circle cx='62' cy='44' r='6' fill='%230f0d09'/></svg>">
 </head>
 <body data-theme="tarde">
+<div id="stage">
 
-<!-- ============ ESCENA: tres planos de profundidad ============ -->
+<!-- ============ ESCENA: tres planos de profundidad y reparto ============ -->
 <div id="scene" aria-hidden="true">
   <div class="sky"></div>
   <div class="glow"></div>
+  <div class="stars" id="scene-stars"></div>
 
   <div class="depth-layer depth-far" id="depth-far">
     <img src="assets/plates/depth-far.jpg" alt="">
@@ -28,6 +30,11 @@
 
   <div class="depth-layer depth-near" id="depth-near">
     <img src="assets/plates/depth-near.jpg" alt="">
+    <figure class="cast cast-snoopy">
+      <img class="cast-balloon" src="assets/chars/c-globo.cut.png" alt="">
+      <img class="cast-body" src="assets/chars/c-snoopy.cut.png" alt="Snoopy atado a su globo rojo">
+    </figure>
+    <figure class="cast cast-woodstock"><img src="assets/chars/c-woodstock.cut.png" alt="Woodstock"></figure>
   </div>
 
   <div class="depth-layer depth-fg" id="depth-fg">
@@ -77,15 +84,14 @@
   </nav>
 
   <div class="status">
-    <div class="widget clock-widget">
+    <div class="clock-block">
       <time id="clock">--:--</time>
+      <span id="date">—</span>
     </div>
-    <button class="widget weather-widget" id="weather" title="Cielo del barrio">
-      <svg viewBox="0 0 64 48" class="wx-icon">
-        <path class="wx-sun" d="M22 22 a11 11 0 1 0 .1 0 M22 4v6 M22 34v6 M4 22h6 M34 22h6 M9 9l4 4 M31 31l4 4"/>
-        <path class="wx-cloud" d="M18 40c-7 0-11-4-11-9s5-9 11-8c2-6 8-9 14-7 5 5 4 12 0 15 5 0 8 4 8 8"/>
-      </svg>
-    </div>
+    <button class="wx-chip" id="weather" title="Cambiar el cielo del barrio">
+      <span class="wx-chip-icon" id="wx-glyph-chip"></span>
+      <span class="wx-chip-temp" id="wx-temp-chip">--°</span>
+    </button>
   </div>
 </header>
 
@@ -96,6 +102,7 @@
   <section class="screen" id="screen-home" data-screen="home">
     <div class="hero" data-nav-row="hero">
       <div class="hero-art" id="hero-art"></div>
+
       <div class="hero-info">
         <span class="eyebrow">Ahora en Tany TV</span>
         <h1 class="hero-title" id="hero-title">—</h1>
@@ -111,6 +118,22 @@
         </div>
         <p class="thought" id="thought"><span>Buen Grief…</span></p>
       </div>
+
+      <aside class="wx-panel" id="wx-panel">
+        <div class="wxp-top">
+          <span class="wxp-glyph" id="wx-glyph"></span>
+          <span class="wxp-temp" id="wx-temp">--°</span>
+        </div>
+        <div class="wxp-city" id="wx-city">—</div>
+        <div class="wxp-label" id="wx-label">—</div>
+        <div class="wxp-range" id="wx-range">—</div>
+        <div class="wxp-hours" id="wx-hours"></div>
+        <div class="wxp-sun">
+          <span class="wxp-sun-item"><em>amanecer</em><span id="wx-sunrise">--:--</span></span>
+          <span class="wxp-sun-bar"><i id="wx-sun-bar"></i></span>
+          <span class="wxp-sun-item"><em>atardecer</em><span id="wx-sunset">--:--</span></span>
+        </div>
+      </aside>
     </div>
 
     <div class="rails" id="home-rails"></div>
@@ -259,33 +282,18 @@
 <!-- ============ REPOSO ============ -->
 <div id="overlay-idle" class="overlay" hidden>
   <div class="idle-stage">
-    <svg viewBox="0 0 1600 900" class="idle-scene">
-      <rect width="1600" height="900" fill="#0B0A08"/>
-      <circle cx="1230" cy="190" r="62" fill="#EDE4CC" opacity=".85"/>
-      <circle cx="1214" cy="178" r="62" fill="#0B0A08"/>
-      <g class="idle-stars"></g>
-      <path d="M0 660 C400 610 900 720 1600 640 L1600 900 L0 900Z" fill="#0E0D0A"/>
-      <g class="idle-doghouse">
-        <path d="M700 520 L980 640 L420 640 Z" fill="#2A241C"/>
-        <rect x="490" y="640" width="420" height="230" fill="#332C21"/>
-        <path d="M620 870 v-120 a80 80 0 0 1 160 0 v120 z" fill="#100E0B"/>
-      </g>
-      <g class="idle-snoopy">
-        <ellipse cx="700" cy="600" rx="150" ry="44" fill="#EDE4CC"/>
-        <circle cx="836" cy="566" r="46" fill="#EDE4CC"/>
-        <path d="M862 540 q40 -10 26 30 q-14 34 -44 22 z" fill="#191510"/>
-        <path d="M596 592 q-28 -26 -8 -46 q26 8 34 34 z" fill="#191510"/>
-        <path d="M848 556 q6 -4 12 0" stroke="#191510" stroke-width="5" fill="none" stroke-linecap="round"/>
-        <path d="M872 570 q16 6 0 12" stroke="#191510" stroke-width="5" fill="none" stroke-linecap="round"/>
-      </g>
-      <g class="idle-zzz">
-        <text x="900" y="470" class="zzz">z</text>
-        <text x="962" y="408" class="zzz">z</text>
-        <text x="1024" y="346" class="zzz">z</text>
-      </g>
-    </svg>
+    <div class="idle-sky"></div>
+    <div class="idle-stars" id="idle-stars"></div>
+    <div class="idle-moon"></div>
+    <div class="idle-hill"></div>
+    <img class="idle-cast" src="assets/chars/c-snoopy.cut.png" alt="Snoopy dormido en su casa">
+    <div class="idle-zzz" aria-hidden="true"><span>z</span><span>z</span><span>z</span></div>
     <div class="idle-wordmark">
       <span class="iw-name">TANY<em>TV</em></span>
+      <div class="idle-info">
+        <span class="idle-time" id="idle-clock">--:--</span>
+        <span class="idle-wx" id="idle-wx"></span>
+      </div>
       <span class="iw-sub">Snoopy se quedó dormido · pulsa cualquier botón</span>
     </div>
   </div>
@@ -293,6 +301,7 @@
 
 <!-- ============ TOAST ============ -->
 <div id="toast" aria-live="polite"></div>
+</div>
 
 <script src="assets/data.js"></script>
 <script src="assets/depth.js"></script>

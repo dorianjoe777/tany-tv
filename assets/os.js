@@ -17,11 +17,14 @@ const State = {
   channel: null,
   idleTimer: null,
   settings: {
-    theme: 'tarde',
+    theme: 'auto',
+    city: 0,
+    units: 'C',
     motion: true,
     sound: true,
     cursor: true,
     clock24: true,
+    shelf: true,
   },
 };
 
@@ -56,6 +59,17 @@ function tickClock() {
   } else {
     const h = h24 % 12 || 12;
     el.textContent = h + ':' + String(d.getMinutes()).padStart(2, '0') + ' ' + (h24 < 12 ? 'AM' : 'PM');
+  }
+  const de = $('#date');
+  if (de) {
+    const dias = ['domingo', 'lunes', 'martes', 'miercoles', 'jueves', 'viernes', 'sabado'];
+    const meses = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio',
+      'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'];
+    de.textContent = dias[d.getDay()] + ' ' + d.getDate() + ' de ' + meses[d.getMonth()];
+  }
+  const ic = $('#idle-clock');
+  if (ic) {
+    ic.textContent = String(h24).padStart(2, '0') + ':' + String(d.getMinutes()).padStart(2, '0');
   }
 }
 setInterval(tickClock, 10000);
@@ -147,7 +161,22 @@ function moveCursorTo(el) {
   const cur = $('#cursor');
   if (!cur || !State.settings.cursor) return;
   const r = el.getBoundingClientRect();
-  cur.style.transform = `translate(${r.left + r.width - 6}px, ${r.top + r.height + 4}px) translate(-50%,-50%)`;
+  const s = State.stageScale || 1;
+  const cx = (r.left + r.width - 6 - (State.stageX || 0)) / s;
+  const cy = (r.top + r.height + 4 - (State.stageY || 0)) / s;
+  cur.style.transform = `translate(${cx}px, ${cy}px) translate(-50%,-50%)`;
+}
+
+/* El lienzo es siempre 1280x720 y se escala a la pantalla real. */
+function fitStage() {
+  const s = Math.min(window.innerWidth / 1280, window.innerHeight / 720);
+  const x = Math.round((window.innerWidth - 1280 * s) / 2);
+  const y = Math.round((window.innerHeight - 720 * s) / 2);
+  State.stageScale = s; State.stageX = x; State.stageY = y;
+  const st = document.documentElement.style;
+  st.setProperty('--ss', s);
+  st.setProperty('--sx', x + 'px');
+  st.setProperty('--sy', y + 'px');
 }
 function activeRows() {
   const scr = $('.screen.is-active');
@@ -253,6 +282,7 @@ function renderHome() {
   renderHeroOnly();
 
   const rails = [
+    { idx: '00', title: 'Tus apps', note: 'Lo que tienes en la TV', kind: 'shelf', items: [] },
     { idx: '01', title: 'Continuar viendo', note: 'Snoopy se quedó dormido', kind: 'continue',
       items: CONTINUE.map(c => continueCard(c)) },
     { idx: '02', title: 'Películas', note: 'Para ver en el sofá', kind: 'movie',
@@ -273,12 +303,13 @@ function renderHome() {
         <span class="rail-note">${esc(r.note)}</span>
         <span class="rail-line"></span>
       </div>
-      <div class="rail-viewport">
-        <div class="rail-items" data-nav-row="rail-${r.kind}">${r.items.join('')}</div>
-      </div>
+      ${r.kind === 'shelf'
+        ? '<div class="shelf" id="shelf"></div>'
+        : `<div class="rail-viewport"><div class="rail-items" data-nav-row="rail-${r.kind}">${r.items.join('')}</div></div>`}
     </div>`).join('');
 
   bindCards();
+  renderShelf();
 }
 
 function cardHTML(item, extraClass) {
@@ -367,7 +398,11 @@ function renderShop() {
 function renderSettings() {
   const s = State.settings;
   const rows = [
-    { k: 'theme', label: 'Cielo del barrio', sub: 'El fondo del sistema', value: { tarde: 'Tarde', dia: 'Día', noche: 'Noche', nieve: 'Nieve' }[s.theme] },
+    { k: 'city', label: 'Ciudad', sub: 'Clima y atardecer', value: (CITIES[s.city] || CITIES[0]).name },
+    { k: 'units', label: 'Temperatura', sub: 'Grados', value: s.units },
+    { k: 'theme', label: 'Cielo del barrio', sub: 'Auto: sigue al atardecer real',
+      value: s.theme === 'auto' ? 'Automatico' : ({ tarde: 'Tarde', dia: 'Dia', noche: 'Noche', nieve: 'Nieve' }[s.theme]) },
+    { k: 'shelf', label: 'Estanteria de apps', sub: 'Las apps de la TV', value: s.shelf ? 'Si' : 'No' },
     { k: 'motion', label: 'Animaciones', sub: 'Snoopy se mueve mucho', value: s.motion ? 'Sí' : 'No' },
     { k: 'sound', label: 'Piano de Schroeder', sub: 'Ambiente de fondo', value: s.sound ? 'Sí' : 'No' },
     { k: 'cursor', label: 'Cursor Woodstock', sub: 'El que deja hojitas', value: s.cursor ? 'Sí' : 'No' },
@@ -382,9 +417,10 @@ function renderSettings() {
 }
 /* Cambia el cielo del barrio: tarde / dia / noche / nieve. */
 function cycleTheme() {
-  const order = ['tarde', 'dia', 'noche', 'nieve'];
+  const order = ['auto', 'tarde', 'dia', 'noche', 'nieve'];
   State.settings.theme = order[(order.indexOf(State.settings.theme) + 1) % order.length];
-  document.body.dataset.theme = State.settings.theme;
+  if (State.settings.theme === 'auto') applyAutoTheme();
+  else document.body.dataset.theme = State.settings.theme;
   applyWeather();
   renderSettings();
   const v = $('#settings-menu .set-row [data-setting="theme"] .set-value');
@@ -395,7 +431,25 @@ function cycleSetting(el) {
   const k = el.dataset.setting;
   const s = State.settings;
   if (k === 'theme') {
-    cycleTheme();
+    const order = ['auto', 'tarde', 'dia', 'noche', 'nieve'];
+    State.settings.theme = order[(order.indexOf(State.settings.theme) + 1) % order.length];
+    if (State.settings.theme === 'auto') applyAutoTheme();
+    else document.body.dataset.theme = State.settings.theme;
+    applyWeather();
+    renderSettings();
+  } else if (k === 'city') {
+    State.settings.city = (State.settings.city + 1) % CITIES.length;
+    loadWeather(true);
+    renderSettings();
+    toast('Clima de ' + (CITIES[State.settings.city] || CITIES[0]).name);
+  } else if (k === 'units') {
+    State.settings.units = State.settings.units === 'C' ? 'F' : 'C';
+    renderWeather();
+    renderSettings();
+  } else if (k === 'shelf') {
+    State.settings.shelf = !State.settings.shelf;
+    renderShelf();
+    renderSettings();
   } else if (k === 'motion') {
     s.motion = !s.motion;
     document.body.classList.toggle('reduced-motion', !s.motion);
@@ -768,14 +822,206 @@ function renderHeroOnly() {
 }
 
 /* ============================================================
+   CLIMA · tiempo real con Open-Meteo (sin clave) y tema por atardecer
+   ============================================================ */
+const WX_CACHE = 'tany.wx.v1';
+
+const WX_ICON = {
+  sol: '<circle cx="16" cy="16" r="7"/><path d="M16 2v4M16 26v4M2 16h4M26 16h4M6 6l3 3M23 23l3 3M26 6l-3 3M9 23l-3 3"/>',
+  nube: '<path d="M9 22h13a6 6 0 0 0 .6-12A8 8 0 0 0 7 12a5 5 0 0 0 2 10z"/>',
+  lluvia: '<path d="M9 19h13a6 6 0 0 0 .6-12A8 8 0 0 0 7 9a5 5 0 0 0 2 10z"/><path d="M11 23l-1 4M17 23l-1 4M23 23l-1 4"/>',
+  nieve: '<path d="M9 19h13a6 6 0 0 0 .6-12A8 8 0 0 0 7 9a5 5 0 0 0 2 10z"/><path d="M10 24h.01M16 27h.01M22 24h.01M10 28h.01M22 28h.01"/>',
+  niebla: '<path d="M9 16h13a6 6 0 0 0 .6-12A8 8 0 0 0 7 6a5 5 0 0 0 2 10z"/><path d="M5 21h22M8 26h16"/>',
+  tormenta: '<path d="M9 18h13a6 6 0 0 0 .6-12A8 8 0 0 0 7 8a5 5 0 0 0 2 10z"/><path d="M17 20l-4 6h4l-2 5"/>',
+};
+
+function wxSvg(key) {
+  return '<svg viewBox="0 0 32 32" class="wx-glyph">' + (WX_ICON[key] || WX_ICON.nube) + '</svg>';
+}
+
+function cityNow() {
+  return CITIES[State.settings.city] || CITIES[0];
+}
+
+function wxUnit(temp) {
+  if (temp == null) return '--';
+  const v = State.settings.units === 'F' ? temp * 9 / 5 + 32 : temp;
+  return Math.round(v) + '°';
+}
+
+function wxUrl(city) {
+  return 'https://api.open-meteo.com/v1/forecast?latitude=' + city.lat + '&longitude=' + city.lon +
+    '&current=temperature_2m,apparent_temperature,is_day,weather_code' +
+    '&hourly=temperature_2m,weather_code' +
+    '&daily=weather_code,temperature_2m_max,temperature_2m_min,sunrise,sunset' +
+    '&timezone=auto&forecast_days=6';
+}
+
+function parseWeather(j, city) {
+  const cur = j.current || {}, hourly = j.hourly || {}, daily = j.daily || {};
+  const now = Date.now();
+  const hours = [];
+  const times = hourly.time || [];
+  for (let i = 0; i < times.length && hours.length < 8; i++) {
+    const t = new Date(times[i]).getTime();
+    if (t >= now - 30 * 60 * 1000) {
+      hours.push({ t: times[i], temp: hourly.temperature_2m[i], code: hourly.weather_code[i] });
+    }
+  }
+  const days = [];
+  const dt = daily.time || [];
+  for (let i = 0; i < dt.length; i++) {
+    days.push({
+      date: dt[i], code: daily.weather_code[i],
+      max: daily.temperature_2m_max[i], min: daily.temperature_2m_min[i],
+      sunrise: daily.sunrise ? daily.sunrise[i] : null,
+      sunset: daily.sunset ? daily.sunset[i] : null
+    });
+  }
+  return {
+    city: city.name, temp: cur.temperature_2m, feels: cur.apparent_temperature,
+    isDay: cur.is_day, code: cur.weather_code, hours: hours, days: days, updated: Date.now()
+  };
+}
+
+function fallbackWeather(city) {
+  return {
+    city: city.name, temp: 14, feels: 13, isDay: 1, code: 2,
+    hours: [], days: [], updated: Date.now(), offline: true
+  };
+}
+
+async function loadWeather(force) {
+  const city = cityNow();
+  try {
+    const raw = localStorage.getItem(WX_CACHE);
+    const cached = raw ? JSON.parse(raw) : null;
+    if (!force && cached && cached.city === city.name && Date.now() - cached.at < 9 * 60 * 1000) {
+      State.weather = cached.data;
+      renderWeather();
+      applyAutoTheme();
+      return;
+    }
+  } catch (e) { /* sin cache */ }
+
+  try {
+    const res = await fetch(wxUrl(city));
+    if (!res.ok) throw new Error('http ' + res.status);
+    State.weather = parseWeather(await res.json(), city);
+    try {
+      localStorage.setItem(WX_CACHE, JSON.stringify({ city: city.name, at: Date.now(), data: State.weather }));
+    } catch (e) { /* sin almacenamiento */ }
+    renderWeather();
+    applyAutoTheme();
+  } catch (e) {
+    State.weather = fallbackWeather(city);
+    renderWeather();
+  }
+}
+
+/* El tema sigue al atardecer real de la ciudad. */
+function applyAutoTheme() {
+  if (State.settings.theme !== 'auto') return;
+  const w = State.weather;
+  let t = 'noche';
+  const d = w && w.days && w.days[0];
+  if (d && d.sunrise && d.sunset) {
+    const now = new Date();
+    const sr = new Date(d.sunrise), ss = new Date(d.sunset);
+    if (now > sr && now < ss) t = now.getHours() >= 16 ? 'tarde' : 'dia';
+  } else if (w && w.isDay) {
+    t = 'dia';
+  }
+  document.body.dataset.theme = t;
+  applyWeather();
+}
+
+function renderWeather() {
+  const w = State.weather;
+  if (!w) return;
+  const info = weatherOf(w.code);
+  const set = (sel, txt) => { const el = $(sel); if (el) el.textContent = txt; };
+  set('#wx-temp', wxUnit(w.temp));
+  set('#wx-label', info.label);
+  set('#wx-city', w.city);
+  const today = w.days && w.days[0];
+  set('#wx-range', today ? wxUnit(today.min) + ' / ' + wxUnit(today.max) : '--');
+  const glyph = $('#wx-glyph');
+  if (glyph) glyph.innerHTML = wxSvg(info.icon);
+
+  const chipT = $('#wx-temp-chip');
+  if (chipT) chipT.textContent = wxUnit(w.temp);
+  const chipG = $('#wx-glyph-chip');
+  if (chipG) chipG.innerHTML = wxSvg(info.icon);
+
+  const sr = $('#wx-sunrise'), ss = $('#wx-sunset');
+  const hhmm = d => new Date(d).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  if (sr && today && today.sunrise) sr.textContent = hhmm(today.sunrise);
+  if (ss && today && today.sunset) ss.textContent = hhmm(today.sunset);
+  const bar = $('#wx-sun-bar');
+  if (bar && today && today.sunrise && today.sunset) {
+    const a = new Date(today.sunrise).getTime();
+    const b = new Date(today.sunset).getTime();
+    const n = Date.now();
+    const p = Math.max(0, Math.min(1, (n - a) / (b - a)));
+    bar.style.left = (p * 100) + '%';
+    bar.style.opacity = (n >= a && n <= b) ? 1 : .25;
+  }
+
+  const strip = $('#wx-hours');
+  if (strip) {
+    strip.innerHTML = (w.hours || []).slice(0, 6).map((h, i) => {
+      const hh = new Date(h.t).getHours();
+      const label = i === 0 ? 'ahora' : String(hh).padStart(2, '0') + 'h';
+      return '<span class="wx-hour"><span class="wx-h">' + label + '</span>' +
+        wxSvg(weatherOf(h.code).icon) + '<span class="wx-t">' + wxUnit(h.temp) + '</span></span>';
+    }).join('');
+  }
+
+  const idle = $('#idle-wx');
+  if (idle) {
+    idle.innerHTML = wxSvg(info.icon) + '<span class="iw-temp">' + wxUnit(w.temp) + '</span>' +
+      '<span class="iw-city">' + esc(w.city) + '</span>';
+  }
+}
+
+/* Estanteria de apps: solo existe en la app nativa (Android TV). */
+function renderShelf() {
+  const box = $('#shelf');
+  if (!box) return;
+  if (!window.TanyNative || typeof window.TanyNative.listApps !== 'function') {
+    box.innerHTML = '<p class="shelf-note">La estanteria de apps aparece en la TV (Android).</p>';
+    return;
+  }
+  let apps = [];
+  try { apps = JSON.parse(window.TanyNative.listApps()) || []; } catch (e) { apps = []; }
+  if (!apps.length) {
+    box.innerHTML = '<p class="shelf-note">No hay apps que mostrar.</p>';
+    return;
+  }
+  box.innerHTML = apps.map(a =>
+    '<button class="app" tabindex="-1" data-pkg="' + esc(a.pkg) + '" title="' + esc(a.label) + '">' +
+    '<span class="app-icon"><img src="data:image/png;base64,' + a.icon + '" alt=""></span>' +
+    '<span class="app-name">' + esc(a.label) + '</span></button>').join('');
+}
+
+function launchApp(pkg) {
+  if (window.TanyNative && typeof window.TanyNative.launchApp === 'function') {
+    window.TanyNative.launchApp(pkg);
+    toast('Abriendo ' + pkg + '…');
+  }
+}
+
+/* ============================================================
    MODO REPOSO
    ============================================================ */
 function armIdle() {
   clearTimeout(State.idleTimer);
+  const ms = State.idleMs || 45000;
   State.idleTimer = setTimeout(() => {
     if (!$('#overlay-player').hidden || !$('#overlay-channel').hidden) return;
     $('#overlay-idle').hidden = false;
-  }, 45000);
+  }, ms);
 }
 function wake() {
   clearTimeout(State.idleTimer);
@@ -838,6 +1084,8 @@ document.addEventListener('click', e => {
   wake();
   if (e.target.closest('.brand')) { switchScreen('home'); return; }
   if (e.target.closest('#weather')) { cycleTheme(); return; }
+  const app = e.target.closest('.app');
+  if (app) { launchApp(app.dataset.pkg); return; }
   const el = e.target.closest(FOCUSABLE);
   if (!el) return;
   clickSound();
@@ -860,8 +1108,11 @@ document.addEventListener('pointerover', e => {
 document.addEventListener('pointermove', e => {
   const cur = $('#cursor');
   if (!cur || !State.settings.cursor) return;
-  cur.style.transform = `translate(${e.clientX}px, ${e.clientY}px) translate(-50%,-50%)`;
-  if (Math.random() < 0.05) spawnLeaf(e.clientX, e.clientY);
+  const s = State.stageScale || 1;
+  const cx = (e.clientX - (State.stageX || 0)) / s;
+  const cy = (e.clientY - (State.stageY || 0)) / s;
+  cur.style.transform = `translate(${cx}px, ${cy}px) translate(-50%,-50%)`;
+  if (Math.random() < 0.05) spawnLeaf(cx, cy);
 });
 
 function spawnLeaf(x, y) {
@@ -910,7 +1161,13 @@ let booted = false;
 function boot() {
   if (booted) return;
   booted = true;
-  document.body.dataset.theme = State.settings.theme;
+  try {
+    const p = new URLSearchParams(location.search).get('idle');
+    if (p) State.idleMs = Math.max(1, parseInt(p, 10)) * 1000;
+  } catch (e) { /* sin parametros */ }
+  document.body.dataset.theme = State.settings.theme === 'auto' ? 'noche' : State.settings.theme;
+  fitStage();
+  window.addEventListener('resize', fitStage);
   applyWeather();
   renderHome();
   renderMovies();
@@ -924,15 +1181,32 @@ function boot() {
   const stars = $('.idle-stars');
   if (stars) {
     let s = '';
-    for (let i = 0; i < 60; i++) {
-      s += `<circle cx="${(i * 137) % 1600}" cy="${(i * 271) % 560}" r="${1 + (i % 3) * 0.8}" opacity="${0.3 + (i % 5) * 0.14}"/>`;
+    for (let i = 0; i < 80; i++) {
+      const x = (i * 137) % 1600, y = (i * 271) % 600;
+      const d = (i % 8) * 0.45;
+      s += '<i style="left:' + (x / 16) + '%;top:' + (y / 6) + '%;animation-delay:' + d.toFixed(2) + 's"></i>';
     }
     stars.innerHTML = s;
+  }
+
+  // estrellas de la escena principal
+  const sstars = $('#scene-stars');
+  if (sstars) {
+    let s = '';
+    for (let i = 0; i < 110; i++) {
+      const x = (i * 211) % 1280, y = (i * 97) % 430;
+      s += '<i style="left:' + (x / 12.8).toFixed(2) + '%;top:' + (y / 4.3).toFixed(2) + '%;animation-delay:' + ((i % 9) * 0.42).toFixed(2) + 's"></i>';
+    }
+    sstars.innerHTML = s;
   }
 
   switchScreen('home');
   $('#thought span').textContent = THOUGHTS[0];
   armIdle();
+
+  renderShelf();
+  loadWeather();
+  setInterval(() => loadWeather(), 10 * 60 * 1000);
 
   // primer gesto: activa el audio (política de autoplay del navegador)
   const unlock = () => {

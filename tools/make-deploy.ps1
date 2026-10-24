@@ -11,6 +11,7 @@ Copy-Item (Join-Path $root 'assets\*.css') (Join-Path $dep 'assets') -Force
 Copy-Item (Join-Path $root 'assets\*.js') (Join-Path $dep 'assets') -Force
 Copy-Item (Join-Path $root 'assets\fonts\*') (Join-Path $dep 'assets\fonts') -Force
 Copy-Item (Join-Path $root 'assets\plates\*.jpg') (Join-Path $dep 'assets\plates') -Force
+Copy-Item (Join-Path $root 'assets\chars\*.cut.png') (Join-Path $dep 'assets\chars') -Force
 Copy-Item (Join-Path $root 'assets\posters\*.jpg') (Join-Path $dep 'assets\posters') -Force
 
 $all = @()
