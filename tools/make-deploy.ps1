@@ -2,7 +2,7 @@ $ErrorActionPreference = 'Continue'
 $root = Split-Path -Parent $PSScriptRoot
 $dep = Join-Path $root 'deploy'
 
-foreach ($d in @($dep, "$dep\assets", "$dep\assets\fonts", "$dep\assets\plates", "$dep\assets\posters")) {
+foreach ($d in @($dep, "$dep\assets", "$dep\assets\fonts", "$dep\assets\plates", "$dep\assets\posters", "$dep\assets\chars")) {
   if (-not (Test-Path $d)) { New-Item -ItemType Directory -Force -Path $d | Out-Null }
 }
 
@@ -11,7 +11,10 @@ Copy-Item (Join-Path $root 'assets\*.css') (Join-Path $dep 'assets') -Force
 Copy-Item (Join-Path $root 'assets\*.js') (Join-Path $dep 'assets') -Force
 Copy-Item (Join-Path $root 'assets\fonts\*') (Join-Path $dep 'assets\fonts') -Force
 Copy-Item (Join-Path $root 'assets\plates\*.jpg') (Join-Path $dep 'assets\plates') -Force
-Copy-Item (Join-Path $root 'assets\chars\*.cut.png') (Join-Path $dep 'assets\chars') -Force
+$charDir = Join-Path $dep 'assets\chars'
+Get-ChildItem (Join-Path $root 'assets\chars') -File -Filter '*.cut.png' | ForEach-Object {
+  Copy-Item $_.FullName (Join-Path $charDir $_.Name) -Force
+}
 Copy-Item (Join-Path $root 'assets\posters\*.jpg') (Join-Path $dep 'assets\posters') -Force
 
 $all = @()
